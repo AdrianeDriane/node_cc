@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-let { people, updatePeople } = require('./data.js');
+let { people } = require('./data.js');
 
 // static assets
 app.use(express.static('./methods-public'));
@@ -70,6 +70,26 @@ app.put('/api/people/:id', (req, res) => {
   res.status(200).send({
     success: true,
     data: people,
+  });
+});
+
+app.delete('/api/people/:id', (req, res) => {
+  const { id } = req.params;
+
+  const foundPerson = people.find((person) => person.id.toString() === id);
+
+  if (!foundPerson) {
+    return res.status(404).send({
+      success: false,
+      msg: 'ID does not match any user in the system.',
+    });
+  }
+
+  const updatedPeople = people.filter((person) => person.id.toString() !== id);
+
+  res.status(200).send({
+    success: true,
+    data: updatedPeople,
   });
 });
 
